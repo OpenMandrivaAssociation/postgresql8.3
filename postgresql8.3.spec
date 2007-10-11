@@ -12,23 +12,27 @@
 %define logrotatedir %{_sysconfdir}/logrotate.d
 
 %define major 5
-%define major_ecpg 5
+%define major_ecpg 6
 
 %define bname postgresql
-%define current_major_version 8.2
-%define current_minor_version 5
+%define current_major_version 8.3
+%define current_minor_version 0
 
-%define release %mkrel 2
+%define beta beta1
+
+%define release %mkrel 0.%{beta}
 
 # For which mdv release this major is our default
 %define produce_devel 0
 %if %mdvver == 200800
 %define produce_devel 1
 %endif
+%if 0
 # If major has not change during another release...
-#%if %mdvver = 200810
-#%define produce_devel 1
-#%endif
+%if %mdvver = 200810
+%define produce_devel 1
+%endif
+%endif
 
 # up to which mdv release this is hightest release
 %define produce_client 0
@@ -46,13 +50,13 @@
 
 Summary: 	PostgreSQL client programs and libraries
 Name:		%{bname}%{current_major_version}
-Version: 	%{current_major_version}.%{current_minor_version}
+Version: 	%{current_major_version}%{?!beta:.%{current_minor_version}}
 Release: 	%release
 License:	BSD
 Group:		Databases
 URL:		http://www.postgresql.org/ 
-Source0:	ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2
-Source5:	ftp://ftp.postgresql.orga/pub/source/v%{version}/postgresql-%{version}.tar.bz2.md5
+Source0:	ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}%{?beta}.tar.bz2
+Source5:	ftp://ftp.postgresql.orga/pub/source/v%{version}/postgresql-%{version}%{?beta}.tar.bz2.md5
 Source11:	postgresql.init
 # http://cvs.mandriva.com/cgi-bin/viewcvs.cgi/soft/postgres-mdkupd/
 Source12:	postgresql-mdk-%{mdk_pg_ver}.tar.bz2
@@ -356,14 +360,14 @@ system, including regression tests and benchmarks.
 
 %prep
 
-%setup -q -n %{bname}-%{version}
+%setup -q -n %{bname}-%{version}%{?beta}
 
 %patch9 -p0 -b .pkglibdir
 
 %patch11 -p1 -b .can-2005-0227
 #%patch13 -p1 -b .can-2005-0246
 
-%setup -n %{bname}-%{version} -a12 -T -D -q
+%setup -n %{bname}-%{version}%{?beta} -a12 -T -D -q
 
 %build
 
@@ -669,7 +673,6 @@ service postgresql start
 %{_libdir}/pgsql/seg.so
 %{_libdir}/pgsql/tablefunc.so
 %{_libdir}/pgsql/timetravel.so
-%{_libdir}/pgsql/tsearch2.so
 %{_libdir}/pgsql/pg_trgm.so
 %{_libdir}/pgsql/autoinc.so
 %{_libdir}/pgsql/pg_buffercache.so
@@ -679,8 +682,11 @@ service postgresql start
 %{_libdir}/pgsql/pg_freespacemap.so
 %{_libdir}/pgsql/pgrowlocks.so
 %{_libdir}/pgsql/sslinfo.so
+%{_libdir}/pgsql/dict_snowball.so
+%{_libdir}/pgsql/pageinspect.so
 
 %{_datadir}/pgsql/contrib/
+%{_datadir}/pgsql/snowball_create.sql
 %{_bindir}/oid2name
 %{_bindir}/pgbench
 %{_bindir}/vacuumlo
@@ -696,6 +702,7 @@ service postgresql start
 %{_bindir}/pg_resetxlog
 %{_bindir}/postgres
 %{_bindir}/postmaster
+%{_bindir}/pg_standby
 %{_mandir}/man1/initdb.1*
 %{_mandir}/man1/ipcclean.1*
 %{_mandir}/man1/pg_controldata.*
@@ -734,6 +741,7 @@ service postgresql start
 %{_datadir}/pgsql/timezonesets/India
 %{_datadir}/pgsql/timezonesets/Indian.txt
 %{_datadir}/pgsql/timezonesets/Pacific.txt
+%{_datadir}/pgsql/tsearch_data
 
 %attr(700,postgres,postgres) %dir /var/log/postgres
 %logrotatedir/%{bname}
