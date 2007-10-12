@@ -20,7 +20,7 @@
 
 %define beta beta1
 
-%define release %mkrel 0.%{beta}
+%define release %mkrel 0.%{beta}.1
 
 # For which mdv release this major is our default
 %define produce_devel 0
@@ -40,10 +40,10 @@
 %define produce_client 1
 %endif 
 
-%define libname %mklibname pq %{major}
-%define libnamedevel %mklibname -d pq
-%define libecpg %mklibname ecpg %{major_ecpg}
-%define libecpgdevel %mklibname -d ecpg
+%define libname %mklibname pq%{current_major_version} _%{major}
+%define libnamedevel %mklibname -d pq%{current_major_version}
+%define libecpg %mklibname ecpg%{current_major_version} _%{major_ecpg}
+%define libecpgdevel %mklibname -d ecpg%{current_major_version}
 
 # Release of our script: soft/postgres-mdkupd in cvs
 %define mdk_pg_ver 1.9
