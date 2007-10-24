@@ -699,7 +699,6 @@ service postgresql start
 %{_libdir}/pgsql/pageinspect.so
 
 %{_datadir}/pgsql/contrib/
-%{_datadir}/pgsql/snowball_create.sql
 %{_bindir}/oid2name
 %{_bindir}/pgbench
 %{_bindir}/vacuumlo
@@ -737,6 +736,7 @@ service postgresql start
 %{_libdir}/pgsql/*_and_*.so
 %{_datadir}/pgsql/conversion_create.sql
 %{_datadir}/pgsql/information_schema.sql
+%{_datadir}/pgsql/snowball_create.sql
 %{_datadir}/pgsql/sql_features.txt
 
 %{_datadir}/pgsql/postgres.shdescription
