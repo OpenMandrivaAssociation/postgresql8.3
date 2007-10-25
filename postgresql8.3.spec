@@ -20,7 +20,7 @@
 
 %define beta beta1
 
-%define release %mkrel 0.%{beta}.2
+%define release %mkrel 0.%{beta}.3
 
 # For which mdv release this major is our default
 %define produce_devel 0
@@ -145,9 +145,9 @@ Provides:       pq-devel = %{version}-%{release}
 # Avoid conflicts with lib having bad major
 Conflicts:  libpq3-devel = 8.0.2
 Obsoletes:  %mklibname -d pq 5
-Provides:   %{_lib}pq%{major}-devel = %{version}-%{release}
-Conflicts:  %{_lib}pq%{major}-devel < %{version}
-Conflicts:  %{_lib}pq%{major}-devel > %{version}
+Provides:   %{_lib}pq-devel = %{version}-%{release}
+Conflicts:  %{_lib}pq-devel < %{version}
+Conflicts:  %{_lib}pq-devel > %{version}
 
 %description -n	%{libnamedevel}
 Development libraries for libpq
@@ -171,9 +171,9 @@ Group:		Development/C
 Requires:	%{libecpg} = %{version}-%{release}
 Provides:	libecpg-devel = %{version}-%{release} 
 Obsoletes:  %mklibname -d ecpg 5
-Provides:   %{_lib}ecpg%{major_ecpg}-devel = %{version}-%{release}
-Conflicts:  %{_lib}ecpg%{major_ecpg}-devel < %{version}-%{release}
-Conflicts:  %{_lib}ecpg%{major_ecpg}-devel > %{version}-%{release}
+Provides:   %{_lib}ecpg-devel = %{version}-%{release}
+Conflicts:  %{_lib}ecpg-devel < %{version}-%{release}
+Conflicts:  %{_lib}ecpg-devel > %{version}-%{release}
 
 %description -n	%{libecpgdevel}
 Development library to libecpg.
