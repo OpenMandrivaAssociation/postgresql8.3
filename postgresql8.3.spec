@@ -62,7 +62,6 @@ Source11:	postgresql.init
 Source12:	postgresql-mdk-%{mdk_pg_ver}.tar.bz2
 Source13:	postgresql.mdv.releasenote
 Patch9:		postgresql-7.4.1-pkglibdir.diff
-Patch11:	postgresql-7.4.5-CAN-2005-0227.patch
 Requires:	perl
 Provides:	postgresql-clients
 Obsoletes:	postgresql-clients
@@ -376,9 +375,6 @@ system, including regression tests and benchmarks.
 %setup -q -n %{bname}-%{version}%{?beta}
 
 %patch9 -p0 -b .pkglibdir
-
-%patch11 -p1 -b .can-2005-0227
-#%patch13 -p1 -b .can-2005-0246
 
 %setup -n %{bname}-%{version}%{?beta} -a12 -T -D -q
 
