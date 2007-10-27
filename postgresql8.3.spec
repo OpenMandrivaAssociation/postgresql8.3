@@ -68,6 +68,8 @@ Obsoletes:	postgresql-clients
 BuildRequires:	XFree86-devel bison flex gettext termcap-devel ncurses-devel openssl-devel
 BuildRequires:	pam-devel perl-devel python-devel readline-devel >= 4.3 tk zlib-devel tcl
 BuildRequires:	tcl tcl-devel
+BuildRequires:  libxml2-devel
+BuildRequires:  libxslt-devel
 # should libedit0 be moved to main?
 BuildConflicts:	edit-devel
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -400,8 +402,9 @@ CFLAGS=`echo $RPM_OPT_FLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
 %endif
 popd
 
-%configure --disable-rpath \
-            --enable-hba \
+%configure \
+        --disable-rpath \
+        --enable-hba \
 	    --enable-locale \
 	    --enable-multibyte \
 	    --enable-syslog\
@@ -409,18 +412,20 @@ popd
 	    --enable-odbc \
 	    --with-perl \
 	    --with-python \
-	    --with-tcl --with-tclconfig=%{_libdir} \
-            --without-tk \
-            --with-openssl \
-            --with-pam \
-            --libdir=%{_libdir} \
-	    --datadir=%{_datadir}/pgsql \
-	    --with-docdir=%{_docdir} \
-	    --includedir=%{_includedir}/pgsql \
-	    --mandir=%{_mandir} \
-	    --prefix=%_prefix \
-	    --sysconfdir=%{_sysconfdir}/pgsql \
-            --enable-nls
+        --with-tcl --with-tclconfig=%{_libdir} \
+        --without-tk \
+        --with-openssl \
+        --with-pam \
+        --with-libxml \
+        --with-libxslt \
+        --libdir=%{_libdir} \
+        --datadir=%{_datadir}/pgsql \
+        --with-docdir=%{_docdir} \
+        --includedir=%{_includedir}/pgsql \
+        --mandir=%{_mandir} \
+        --prefix=%_prefix \
+        --sysconfdir=%{_sysconfdir}/pgsql \
+        --enable-nls
 
 # $(rpathdir) come from Makefile
 perl -pi -e 's|^all:|LINK.shared=\$(COMPILER) -shared -Wl,-rpath,\$(rpathdir),-soname,\$(soname)\nall:|' src/pl/plperl/GNUmakefile
@@ -730,6 +735,7 @@ service postgresql start
 %attr(-,postgres,postgres) %{pgdata}/data
 %attr(700,postgres,postgres) %dir %{pgdata}/backups
 %{_libdir}/pgsql/*_and_*.so
+%{_libdir}/pgsql/pgxml.so
 %{_datadir}/pgsql/conversion_create.sql
 %{_datadir}/pgsql/information_schema.sql
 %{_datadir}/pgsql/snowball_create.sql
