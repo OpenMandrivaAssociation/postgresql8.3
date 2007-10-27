@@ -18,9 +18,13 @@
 %define current_major_version 8.3
 %define current_minor_version 0
 
-%define beta beta1
+# Define if it's a beta
+%define beta beta2
 
-%define release %mkrel 0.%{beta}.3
+# define the mdv release
+%define rel 1
+
+%define release %mkrel %{?beta:0.%{beta}.}%{rel}
 
 # For which mdv release this major is our default
 %define produce_devel 0
@@ -723,11 +727,6 @@ service postgresql start
 %{_mandir}/man1/pg_resetxlog.*
 %{_mandir}/man1/postgres.1*
 %{_mandir}/man1/postmaster.1*
-%{_datadir}/pgsql/postgres.bki
-%{_datadir}/pgsql/postgres.description
-%{_datadir}/pgsql/*.sample
-%{_datadir}/pgsql/timezone
-%{_datadir}/pgsql/system_views.sql
 %dir %{_libdir}/pgsql
 %dir %{_datadir}/pgsql
 %attr(644,postgres,postgres) %config(noreplace) %{_localstatedir}/pgsql/.bashrc
@@ -736,6 +735,14 @@ service postgresql start
 %attr(700,postgres,postgres) %dir %{pgdata}/backups
 %{_libdir}/pgsql/*_and_*.so
 %{_libdir}/pgsql/pgxml.so
+%{_libdir}/pgsql/dict_int.so
+%{_libdir}/pgsql/dict_xsyn.so
+%{_libdir}/pgsql/test_parser.so
+%{_datadir}/pgsql/postgres.bki
+%{_datadir}/pgsql/postgres.description
+%{_datadir}/pgsql/*.sample
+%{_datadir}/pgsql/timezone
+%{_datadir}/pgsql/system_views.sql
 %{_datadir}/pgsql/conversion_create.sql
 %{_datadir}/pgsql/information_schema.sql
 %{_datadir}/pgsql/snowball_create.sql
