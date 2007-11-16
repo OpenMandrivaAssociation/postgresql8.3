@@ -19,7 +19,7 @@
 %define current_minor_version 0
 
 # Define if it's a beta
-%define beta beta2
+%define beta beta3
 
 # define the mdv release
 %define rel 1
@@ -738,6 +738,7 @@ service postgresql start
 %{_libdir}/pgsql/dict_int.so
 %{_libdir}/pgsql/dict_xsyn.so
 %{_libdir}/pgsql/test_parser.so
+%{_libdir}/pgsql/tsearch2.so
 %{_datadir}/pgsql/postgres.bki
 %{_datadir}/pgsql/postgres.description
 %{_datadir}/pgsql/*.sample
