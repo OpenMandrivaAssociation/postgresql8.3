@@ -19,7 +19,7 @@
 %define current_minor_version 0
 
 # Define if it's a beta
-%define beta beta3
+%define beta beta4
 
 # define the mdv release
 %define rel 1
