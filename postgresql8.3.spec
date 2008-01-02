@@ -76,6 +76,7 @@ BuildRequires:  libxml2-devel
 BuildRequires:  libxslt-devel
 # should libedit0 be moved to main?
 BuildConflicts:	edit-devel
+Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Provides: %{bname}-virtual = %{version}-%{release}
 Conflicts: %{bname}-virtual < %{version}
 Conflicts: %{bname}-virtual > %{version}
