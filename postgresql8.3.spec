@@ -4,7 +4,6 @@
 %define _requires_exceptions devel(libtcl8.4)
 %endif
 
-%define pyver %(python -c 'import sys;print(sys.version[0:3])')
 %define perl_version %(rpm -q --qf "%{VERSION}" perl)
 %define perl_epoch %(rpm -q --qf "%{EPOCH}" perl)
 
@@ -19,7 +18,7 @@
 %define current_minor_version 0
 
 # Define if it's a beta
-%define beta beta4
+%define beta RC1
 
 # define the mdv release
 %define rel 1
