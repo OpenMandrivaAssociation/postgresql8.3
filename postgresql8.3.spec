@@ -23,7 +23,7 @@
 # define the mdv release
 %define rel 1
 
-%define release %mkrel %{?beta:0.%{beta}.}%{rel}
+%define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
 # For which mdv release this major is our default
 %define produce_devel 0
