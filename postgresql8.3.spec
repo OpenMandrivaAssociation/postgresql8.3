@@ -18,10 +18,10 @@
 %define current_minor_version 0
 
 # Define if it's a beta
-%define beta RC1
+%define beta RC2
 
 # define the mdv release
-%define rel 2
+%define rel 1
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
