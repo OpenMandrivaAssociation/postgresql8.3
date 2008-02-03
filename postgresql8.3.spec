@@ -18,7 +18,7 @@
 %define current_minor_version 0
 
 # Define if it's a beta
-%define beta RC2
+# %%define beta RC2
 
 # define the mdv release
 %define rel 1
