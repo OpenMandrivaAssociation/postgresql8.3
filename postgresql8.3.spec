@@ -21,25 +21,20 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 1
+%define rel 2
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
 # For which mdv release this major is our default
 %define produce_devel 0
-%if %mdvver == 200800
-%define produce_devel 1
-%endif
-%if 0
 # If major has not change during another release...
-%if %mdvver = 200810
+%if %mdvver == 200810
 %define produce_devel 1
-%endif
 %endif
 
 # up to which mdv release this is hightest release
 %define produce_client 0
-%if %mdvver <= 200800
+%if %mdvver <= 200810
 %define produce_client 1
 %endif 
 
