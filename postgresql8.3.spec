@@ -21,7 +21,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 2
+%define rel 3
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -39,9 +39,7 @@
 %endif 
 
 %define libname %mklibname pq%{current_major_version} _%{major}
-%define libnamedevel %mklibname -d pq%{current_major_version}
 %define libecpg %mklibname ecpg%{current_major_version} _%{major_ecpg}
-%define libecpgdevel %mklibname -d ecpg%{current_major_version}
 
 # Release of our script: soft/postgres-mdkupd in cvs
 %define mdk_pg_ver 1.9
@@ -134,22 +132,6 @@ C and C++ libraries to enable user programs to communicate with the
 PostgreSQL database backend. The backend can be on another machine and
 accessed through TCP/IP.
 
-%package -n	%{libnamedevel}
-Summary:	Development library for libpq
-Group:		Development/C
-Requires:	%{libname} = %{version}-%{release}
-Provides:	postgresql-libs-devel = %{version}-%{release}
-Provides:   libpq-devel = %{version}-%{release}
-Provides:       pq-devel = %{version}-%{release}
-# Avoid conflicts with lib having bad major
-Conflicts:  libpq3-devel = 8.0.2
-Obsoletes:  %mklibname -d pq 5
-Provides:   %{_lib}pq-devel = %{version}-%{release}
-Conflicts:  %{_lib}pq-devel < %{version}
-Conflicts:  %{_lib}pq-devel > %{version}
-
-%description -n	%{libnamedevel}
-Development libraries for libpq
 
 %package -n	%{libecpg}
 Summary:	Shared library libecpg for PostgreSQL
@@ -163,19 +145,6 @@ Conflicts:  %{_lib}ecpg%{major_ecpg} > %{version}-%{release}
 %description -n	%{libecpg}
 Libecpg is used by programs built with ecpg (Embedded PostgreSQL for C)
 Use postgresql-dev to develop such programs.
-
-%package -n	%{libecpgdevel}
-Summary:	Development library to libecpg
-Group:		Development/C
-Requires:	%{libecpg} = %{version}-%{release}
-Provides:	libecpg-devel = %{version}-%{release} 
-Obsoletes:  %mklibname -d ecpg 5
-Provides:   %{_lib}ecpg-devel = %{version}-%{release}
-Conflicts:  %{_lib}ecpg-devel < %{version}-%{release}
-Conflicts:  %{_lib}ecpg-devel > %{version}-%{release}
-
-%description -n	%{libecpgdevel}
-Development library to libecpg.
 
 %package	server
 Summary:	The programs needed to create and run a PostgreSQL server
@@ -240,11 +209,27 @@ the PostgreSQL tarball.  Selected contrib modules are prebuilt.
 Summary:	PostgreSQL development header files and libraries
 Group:		Development/Databases
 Requires:	postgresql%{current_major_version} = %{version}-%{release}
-Requires:   %{libnamedevel} = %{version}-%{release}
-Requires:	%{libecpgdevel} = %{version}-%{release}
 Provides: %{bname}-devel-virtual = %{version}-%{release}
 Conflicts: %{bname}-devel-virtual < %{version}
 Conflicts: %{bname}-devel-virtual > %{version}
+Requires:	%{libname} = %{version}-%{release}
+Provides:	postgresql-libs-devel = %{version}-%{release}
+Provides:   libpq-devel = %{version}-%{release}
+Provides:       pq-devel = %{version}-%{release}
+# Avoid conflicts with lib having bad major
+Conflicts:  libpq3-devel = 8.0.2
+Provides:   %{_lib}pq-devel = %{version}-%{release}
+Conflicts:  %{_lib}pq-devel < %{version}
+Conflicts:  %{_lib}pq-devel > %{version}
+Requires:	%{libecpg} = %{version}-%{release}
+Provides:	libecpg-devel = %{version}-%{release} 
+Provides:   %{_lib}ecpg-devel = %{version}-%{release}
+Conflicts:  %{_lib}ecpg-devel < %{version}-%{release}
+Conflicts:  %{_lib}ecpg-devel > %{version}-%{release}
+Obsoletes:  %mklibname -d ecpg 5
+Obsoletes:  %mklibname -d pq 5
+Obsoletes:  %mklibname -d pq8.3
+Obsoletes:  %mklibname -d ecpg8.3
 
 %description	devel
 The postgresql-devel package contains the header files and libraries
@@ -646,19 +631,11 @@ service postgresql start
 %defattr(-,root,root)
 %{_libdir}/libpq.so.%{major}*
 
-%files -n %{libnamedevel}
-%defattr(-,root,root)
-%{_libdir}/libpq.so
-
 %files -n %{libecpg}
 %defattr(-,root,root)
 %{_libdir}/libecpg.so.%{major_ecpg}*
 %{_libdir}/libecpg_compat.so.*
 %{_libdir}/libpgtypes.so.*
-
-%files -n %{libecpgdevel}
-%defattr(-,root,root)
-%{_libdir}/libecpg.so
 
 %files docs
 %defattr(-,root,root)
@@ -774,6 +751,10 @@ service postgresql start
 %{_mandir}/man1/ecpg.1*
 %{_bindir}/pg_config
 %{_mandir}/man1/pg_config.1*
+#From %files -n %{libnamedevel}
+%{_libdir}/libpq.so
+#From %files -n %{libecpgdevel}
+%{_libdir}/libecpg.so
 
 %if %produce_devel
 %files -n %{bname}-devel
