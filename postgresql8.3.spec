@@ -21,7 +21,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 3
+%define rel 4
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -266,6 +266,7 @@ Requires:	%{name}-plpgsql = %{version}-%{release}
 Provides: %{bname}-pl-virtual = %{version}-%{release}
 Conflicts: %{bname}-pl-virtual < %{version}
 Conflicts: %{bname}-pl-virtual > %{version}
+Obsoletes: %{bname}-pl
 
 %description	pl
 PostgreSQL is an advanced Object-Relational database management
@@ -282,6 +283,7 @@ Requires: %{?arch_tagged:%arch_tagged %{bname}-server-ABI}%{?!arch_tagged:%{bnam
 Provides: %{bname}-plpython-virtual = %{version}-%{release}
 Conflicts: %{bname}-plpython-virtual < %{version}
 Conflicts: %{bname}-plpython-virtual > %{version}
+Obsoletes: %{bname}-plpython
 
 %description	plpython
 PostgreSQL is an advanced Object-Relational database management
@@ -300,6 +302,7 @@ Requires: %{?arch_tagged:%arch_tagged %{bname}-server-ABI}%{?!arch_tagged:%{bnam
 Provides: %{bname}-plperl-virtual = %{version}-%{release}
 Conflicts: %{bname}-plperl-virtual < %{version}
 Conflicts: %{bname}-plperl-virtual > %{version}
+Obsoletes: %{bname}-plperl
 
 %description	plperl
 PostgreSQL is an advanced Object-Relational database management
@@ -316,6 +319,7 @@ Requires: %{?arch_tagged:%arch_tagged %{bname}-server-ABI}%{?!arch_tagged:%{bnam
 Provides: %{bname}-pltcl-virtual = %{version}-%{release}
 Conflicts: %{bname}-pltcl-virtual < %{version}
 Conflicts: %{bname}-pltcl-virtual > %{version}
+Obsoletes: %{bname}-pltcl
 
 %description	pltcl
 PostgreSQL is an advanced Object-Relational database management
@@ -333,6 +337,7 @@ Requires: %{?arch_tagged:%arch_tagged %{bname}-server-ABI}%{?!arch_tagged:%{bnam
 Provides: %{bname}-plpgsql-virtual = %{version}-%{release}
 Conflicts: %{bname}-plpgsql-virtual < %{version}
 Conflicts: %{bname}-plpgsql-virtual > %{version}
+Obsoletes: %{bname}-plpgsql
 
 %description	plpgsql
 PostgreSQL is an advanced Object-Relational database management
