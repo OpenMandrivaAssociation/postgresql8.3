@@ -21,7 +21,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 5
+%define rel 6
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -681,7 +681,6 @@ service postgresql start
 %{_libdir}/pgsql/pg_freespacemap.so
 %{_libdir}/pgsql/pgrowlocks.so
 %{_libdir}/pgsql/sslinfo.so
-%{_libdir}/pgsql/dict_snowball.so
 %{_libdir}/pgsql/pageinspect.so
 
 %{_datadir}/pgsql/contrib/
@@ -720,6 +719,7 @@ service postgresql start
 %{_libdir}/pgsql/dict_xsyn.so
 %{_libdir}/pgsql/test_parser.so
 %{_libdir}/pgsql/tsearch2.so
+%{_libdir}/pgsql/dict_snowball.so
 %{_datadir}/pgsql/postgres.bki
 %{_datadir}/pgsql/postgres.description
 %{_datadir}/pgsql/*.sample
