@@ -566,7 +566,9 @@ EOF
 
 %_bindir/mdk_pg -m -i %{version}-%{release}
 
+%if %mdkversion < 200900
 %post server -p /sbin/ldconfig
+%endif
 
 %posttrans server
 
@@ -585,14 +587,24 @@ service postgresql start
 %_preun_service %{bname}
 
 %postun server
+%if %mdkversion < 200900
 /sbin/ldconfig
+%endif
 %_postun_userdel postgres
 
+%if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
+%endif
+%if %mdkversion < 200900
 %postun -n %{libname} -p /sbin/ldconfig
+%endif
 
+%if %mdkversion < 200900
 %post -n %{libecpg} -p /sbin/ldconfig
+%endif
+%if %mdkversion < 200900
 %postun -n %{libecpg} -p /sbin/ldconfig
+%endif
 
 %clean
 [ $RPM_BUILD_ROOT != '/' ] && rm -rf $RPM_BUILD_ROOT
