@@ -724,11 +724,7 @@ service postgresql start
 %{_mandir}/man1/postmaster.1*
 %dir %{_libdir}/pgsql
 %dir %{_datadir}/pgsql
-%if %mdvver < 200900
-%attr(644,postgres,postgres) %config(noreplace) %{_localstatedir}/pgsql/.bashrc
-%else
-%attr(644,postgres,postgres) %config(noreplace) %{_localstatedir}/lib/pgsql/.bashrc
-%endif
+%attr(644,postgres,postgres) %config(noreplace) /var/lib/pgsql/.bashrc
 %attr(700,postgres,postgres) %dir %{pgdata}
 %attr(-,postgres,postgres) %{pgdata}/data
 %attr(700,postgres,postgres) %dir %{pgdata}/backups
