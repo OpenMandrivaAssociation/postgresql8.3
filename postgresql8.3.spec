@@ -54,8 +54,6 @@ URL:		http://www.postgresql.org/
 Source0:	ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}%{?beta}.tar.bz2
 Source5:	ftp://ftp.postgresql.orga/pub/source/v%{version}/postgresql-%{version}%{?beta}.tar.bz2.md5
 Source11:	postgresql.init
-# http://cvs.mandriva.com/cgi-bin/viewcvs.cgi/soft/postgres-mdkupd/
-Source12:	postgresql-mdk-%{mdk_pg_ver}.tar.bz2
 Source13:	postgresql.mdv.releasenote
 Patch9:		postgresql-7.4.1-pkglibdir.diff
 Requires:	perl
@@ -507,20 +505,6 @@ rm -fr $RPM_BUILD_ROOT%{_datadir}/doc/postgresql/contrib/
 cd postgresql-mdk
 make install DESTDIR=%buildroot
 )
-mkdir -p %buildroot%_sysconfdir/sysconfig
-cat > %buildroot%_sysconfdir/sysconfig/mdkpg <<EOF
-# Olivier Thauvin <nanardon@mandriva.org>
-
-# This file control the behaviour of automatic
-# Postgresql database migration between major version
-
-# The directory where backups are stored
-# BACKUPDIR=%pgdata/backups
-
-# Deny to rpm to automatically migrate data
-# Set to 1 to deny
-# NORPMMIGRATION=0
-EOF
 
 mkdir -p %buildroot/%_sys_macros_dir
 cat > %buildroot/%_sys_macros_dir/%{name}.macros <<EOF
@@ -559,30 +543,14 @@ EOF
 %pre server
 %_pre_useradd postgres /var/lib/pgsql /bin/bash
 
-[ -f %_sysconfdir/sysconfig/mdkpg ] && . %_sysconfdir/sysconfig/mdkpg
-
-[ "$NORPMMIGRATION" = 1 ] && exit 0
 [ ! -f %pgdata/data/PG_VERSION ] && exit 0
 [ `cat %pgdata/data/PG_VERSION` = %{current_major_version} ] && exit 0
-
-%_bindir/mdk_pg -b -i %{version}-%{release}
-
-%_bindir/mdk_pg -m -i %{version}-%{release}
 
 %if %mdkversion < 200900
 %post server -p /sbin/ldconfig
 %endif
 
 %posttrans server
-
-[ -f %_sysconfdir/sysconfig/mdkpg ] && . %_sysconfdir/sysconfig/mdkpg
-
-[ "$NORPMMIGRATION" = 1 ] && exit 0
-[ -f ${BACKUPDIR}/db.%{version}-%{release}.gz ] || exit 0
-
-service postgresql start
-
-%_bindir/mdk_pg -r -i %{version}-%{release}
 
 %_post_service %{bname}
 
