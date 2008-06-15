@@ -373,8 +373,6 @@ system, including regression tests and benchmarks.
 
 %patch9 -p0 -b .pkglibdir
 
-%setup -n %{bname}-%{version}%{?beta} -a12 -T -D -q
-
 %build
 
 pushd src
