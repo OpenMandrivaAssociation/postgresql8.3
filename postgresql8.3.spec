@@ -418,7 +418,6 @@ popd
         --libdir=%{_libdir} \
         --datadir=%{_datadir}/pgsql \
         --with-docdir=%{_docdir} \
-        --includedir=%{_includedir}/pgsql \
         --mandir=%{_mandir} \
         --prefix=%_prefix \
         --sysconfdir=%{_sysconfdir}/pgsql \
@@ -448,7 +447,7 @@ make -C contrib DESTDIR=$RPM_BUILD_ROOT pkglibdir=%{_libdir}/pgsql install
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pgsql
 
 # copy over Makefile.global to the include dir....
-install -m755 src/Makefile.global $RPM_BUILD_ROOT%{_includedir}/pgsql/
+#install -m755 src/Makefile.global $RPM_BUILD_ROOT%{_includedir}/pgsql/
 
 # PGDATA needs removal of group and world permissions due to pg_pwd hole.
 install -d -m 700 $RPM_BUILD_ROOT/var/lib/pgsql/data
@@ -768,7 +767,7 @@ service postgresql start
 %files devel
 %defattr(-,root,root)
 %doc doc/TODO doc/TODO.detail
-%{_includedir}/pgsql
+%{_includedir}/*
 %{_bindir}/ecpg
 %{_libdir}/lib*.a
 %{_libdir}/lib*.so
