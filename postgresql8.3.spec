@@ -21,7 +21,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 1
+%define rel 2
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -41,9 +41,6 @@
 %define libname %mklibname pq%{current_major_version} _%{major}
 %define libecpg %mklibname ecpg%{current_major_version} _%{major_ecpg}
 
-# Release of our script: soft/postgres-mdkupd in cvs
-%define mdk_pg_ver 1.9
-
 Summary: 	PostgreSQL client programs and libraries
 Name:		%{bname}%{current_major_version}
 Version: 	%{current_major_version}%{?!beta:.%{current_minor_version}}
@@ -55,7 +52,6 @@ Source0:	ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}%{
 Source5:	ftp://ftp.postgresql.orga/pub/source/v%{version}/postgresql-%{version}%{?beta}.tar.bz2.md5
 Source11:	postgresql.init
 Source13:	postgresql.mdv.releasenote
-Patch9:		postgresql-7.4.1-pkglibdir.diff
 Requires:	perl
 Provides:	postgresql-clients
 Obsoletes:	postgresql-clients
@@ -166,6 +162,7 @@ Provides: %{bname}-server-virtual = %{version}-%{release}
 Conflicts: %{bname}-server-virtual < %{version}
 Conflicts: %{bname}-server-virtual > %{version}
 Provides: %{bname}-server = %{version}-%{release}
+Obsoletes: %{bname}8.3
 
 %description	server
 The postgresql-server package includes the programs needed to create
@@ -352,26 +349,9 @@ system.  The postgresql-plpgsql package contains the the PL/PgSQL
 procedural languages for the backend. PL/PgSQL is part of the core 
 server package.
 
-%package	test
-Summary:	The test suite distributed with PostgreSQL
-Group:		Databases
-Requires:	%{name} >= %{version}-%{release}
-Requires:	%{name}-pl = %{version}-%{release}
-Provides: %{bname}-test-virtual = %{version}-%{release}
-Conflicts: %{bname}-test-virtual < %{version}
-Conflicts: %{bname}-test-virtual > %{version}
-
-%description	test
-PostgreSQL is an advanced Object-Relational database management
-system. The postgresql-test package includes the sources and pre-built
-binaries of various tests for the PostgreSQL database management
-system, including regression tests and benchmarks.
-
 %prep
 
 %setup -q -n %{bname}-%{version}%{?beta}
-
-%patch9 -p0 -b .pkglibdir
 
 %build
 
@@ -382,17 +362,9 @@ then
    cp %{_datadir}/libtool/config.* .
 fi
 
-# doesn't build on PPC with full optimization (sb)
-%ifnarch ppc
-CFLAGS="${CFLAGS:-$RPM_OPT_FLAGS}" ; export CFLAGS
-CXXFLAGS="${CXXFLAGS:-$RPM_OPT_FLAGS}" ; export CXXFLAGS
-%endif
-
-#fix -ffast-math problem (deush)
-%ifnarch ppc
 %serverbuild
 CFLAGS=`echo $RPM_OPT_FLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
-%endif
+
 popd
 
 %configure \
@@ -412,7 +384,6 @@ popd
         --with-libxml \
         --with-libxslt \
         --libdir=%{_libdir} \
-        --datadir=%{_datadir}/pgsql \
         --with-docdir=%{_docdir} \
         --mandir=%{_mandir} \
         --prefix=%_prefix \
@@ -423,8 +394,8 @@ popd
 perl -pi -e 's|^all:|LINK.shared=\$(COMPILER) -shared -Wl,-rpath,\$(rpathdir),-soname,\$(soname)\nall:|' src/pl/plperl/GNUmakefile
 
 
-%make pkglibdir=%{_libdir}/pgsql all
-%make -C contrib pkglibdir=%{_libdir}/pgsql all
+%make all
+%make -C contrib all
 
 pushd src/test
 make all
@@ -436,8 +407,8 @@ make check
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make DESTDIR=$RPM_BUILD_ROOT pkglibdir=%{_libdir}/pgsql install 
-make -C contrib DESTDIR=$RPM_BUILD_ROOT pkglibdir=%{_libdir}/pgsql install
+make DESTDIR=$RPM_BUILD_ROOT install 
+make -C contrib DESTDIR=$RPM_BUILD_ROOT install
 
 # install odbcinst.ini
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pgsql
@@ -454,6 +425,7 @@ install -d -m 700 $RPM_BUILD_ROOT/var/lib/pgsql/backups
 # Create the multiple postmaster startup directory
 install -d -m 700 $RPM_BUILD_ROOT/etc/sysconfig/pgsql
 
+%if 0
 # tests. There are many files included here that are unnecessary, but include
 # them anyway for completeness.
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/pgsql/test
@@ -463,6 +435,7 @@ install -m 0755 contrib/spi/autoinc.so $RPM_BUILD_ROOT%{_libdir}/pgsql/test/regr
 pushd  $RPM_BUILD_ROOT%{_libdir}/pgsql/test/regress/
 strip *.so
 popd
+%endif
 
 mkdir -p %buildroot/var/log/postgres
 
@@ -609,8 +582,6 @@ EOF
 %{_mandir}/man1/vacuumdb.*
 %{_mandir}/man1/reindexdb.*
 %{_mandir}/man7/*
-%{_bindir}/mdk_pg
-%config(noreplace) %_sysconfdir/sysconfig/mdkpg
 %_sys_macros_dir/%{name}.macros
 
 %if %produce_client
@@ -634,36 +605,36 @@ EOF
 %files contrib
 %defattr(-,root,root)
 %doc contrib/*/README.* contrib/spi/*.example
-%{_libdir}/pgsql/_int.so
-%{_libdir}/pgsql/btree_gist.so
-%{_libdir}/pgsql/chkpass.so
-%{_libdir}/pgsql/cube.so
-%{_libdir}/pgsql/dblink.so
-%{_libdir}/pgsql/earthdistance.so
-%{_libdir}/pgsql/fuzzystrmatch.so
-%{_libdir}/pgsql/insert_username.so
-%{_libdir}/pgsql/int_aggregate.so
-%{_libdir}/pgsql/lo.so
-%{_libdir}/pgsql/ltree.so
-%{_libdir}/pgsql/moddatetime.so
-%{_libdir}/pgsql/pgcrypto.so
-%{_libdir}/pgsql/pgstattuple.so
-%{_libdir}/pgsql/refint.so
-%{_libdir}/pgsql/seg.so
-%{_libdir}/pgsql/tablefunc.so
-%{_libdir}/pgsql/timetravel.so
-%{_libdir}/pgsql/pg_trgm.so
-%{_libdir}/pgsql/autoinc.so
-%{_libdir}/pgsql/pg_buffercache.so
-%{_libdir}/pgsql/adminpack.so
-%{_libdir}/pgsql/hstore.so
-%{_libdir}/pgsql/isn.so
-%{_libdir}/pgsql/pg_freespacemap.so
-%{_libdir}/pgsql/pgrowlocks.so
-%{_libdir}/pgsql/sslinfo.so
-%{_libdir}/pgsql/pageinspect.so
+%{_libdir}/postgresql/_int.so
+%{_libdir}/postgresql/btree_gist.so
+%{_libdir}/postgresql/chkpass.so
+%{_libdir}/postgresql/cube.so
+%{_libdir}/postgresql/dblink.so
+%{_libdir}/postgresql/earthdistance.so
+%{_libdir}/postgresql/fuzzystrmatch.so
+%{_libdir}/postgresql/insert_username.so
+%{_libdir}/postgresql/int_aggregate.so
+%{_libdir}/postgresql/lo.so
+%{_libdir}/postgresql/ltree.so
+%{_libdir}/postgresql/moddatetime.so
+%{_libdir}/postgresql/pgcrypto.so
+%{_libdir}/postgresql/pgstattuple.so
+%{_libdir}/postgresql/refint.so
+%{_libdir}/postgresql/seg.so
+%{_libdir}/postgresql/tablefunc.so
+%{_libdir}/postgresql/timetravel.so
+%{_libdir}/postgresql/pg_trgm.so
+%{_libdir}/postgresql/autoinc.so
+%{_libdir}/postgresql/pg_buffercache.so
+%{_libdir}/postgresql/adminpack.so
+%{_libdir}/postgresql/hstore.so
+%{_libdir}/postgresql/isn.so
+%{_libdir}/postgresql/pg_freespacemap.so
+%{_libdir}/postgresql/pgrowlocks.so
+%{_libdir}/postgresql/sslinfo.so
+%{_libdir}/postgresql/pageinspect.so
 
-%{_datadir}/pgsql/contrib/
+%{_datadir}/postgresql/contrib/
 %{_bindir}/oid2name
 %{_bindir}/pgbench
 %{_bindir}/vacuumlo
@@ -687,45 +658,45 @@ EOF
 %{_mandir}/man1/pg_resetxlog.*
 %{_mandir}/man1/postgres.1*
 %{_mandir}/man1/postmaster.1*
-%dir %{_libdir}/pgsql
-%dir %{_datadir}/pgsql
+%dir %{_libdir}/postgresql
+%dir %{_datadir}/postgresql
 %attr(644,postgres,postgres) %config(noreplace) /var/lib/pgsql/.bashrc
 %attr(700,postgres,postgres) %dir %{pgdata}
 %attr(-,postgres,postgres) %{pgdata}/data
 %attr(700,postgres,postgres) %dir %{pgdata}/backups
-%{_libdir}/pgsql/*_and_*.so
-%{_libdir}/pgsql/pgxml.so
-%{_libdir}/pgsql/dict_int.so
-%{_libdir}/pgsql/dict_xsyn.so
-%{_libdir}/pgsql/test_parser.so
-%{_libdir}/pgsql/tsearch2.so
-%{_libdir}/pgsql/dict_snowball.so
-%{_datadir}/pgsql/postgres.bki
-%{_datadir}/pgsql/postgres.description
-%{_datadir}/pgsql/*.sample
-%{_datadir}/pgsql/timezone
-%{_datadir}/pgsql/system_views.sql
-%{_datadir}/pgsql/conversion_create.sql
-%{_datadir}/pgsql/information_schema.sql
-%{_datadir}/pgsql/snowball_create.sql
-%{_datadir}/pgsql/sql_features.txt
+%{_libdir}/postgresql/*_and_*.so
+%{_libdir}/postgresql/pgxml.so
+%{_libdir}/postgresql/dict_int.so
+%{_libdir}/postgresql/dict_xsyn.so
+%{_libdir}/postgresql/test_parser.so
+%{_libdir}/postgresql/tsearch2.so
+%{_libdir}/postgresql/dict_snowball.so
+%{_datadir}/postgresql/postgres.bki
+%{_datadir}/postgresql/postgres.description
+%{_datadir}/postgresql/*.sample
+%{_datadir}/postgresql/timezone
+%{_datadir}/postgresql/system_views.sql
+%{_datadir}/postgresql/conversion_create.sql
+%{_datadir}/postgresql/information_schema.sql
+%{_datadir}/postgresql/snowball_create.sql
+%{_datadir}/postgresql/sql_features.txt
 
-%{_datadir}/pgsql/postgres.shdescription
-%dir %{_datadir}/pgsql/timezonesets
-%{_datadir}/pgsql/timezonesets/Africa.txt
-%{_datadir}/pgsql/timezonesets/America.txt
-%{_datadir}/pgsql/timezonesets/Antarctica.txt
-%{_datadir}/pgsql/timezonesets/Asia.txt
-%{_datadir}/pgsql/timezonesets/Atlantic.txt
-%{_datadir}/pgsql/timezonesets/Australia
-%{_datadir}/pgsql/timezonesets/Australia.txt
-%{_datadir}/pgsql/timezonesets/Default
-%{_datadir}/pgsql/timezonesets/Etc.txt
-%{_datadir}/pgsql/timezonesets/Europe.txt
-%{_datadir}/pgsql/timezonesets/India
-%{_datadir}/pgsql/timezonesets/Indian.txt
-%{_datadir}/pgsql/timezonesets/Pacific.txt
-%{_datadir}/pgsql/tsearch_data
+%{_datadir}/postgresql/postgres.shdescription
+%dir %{_datadir}/postgresql/timezonesets
+%{_datadir}/postgresql/timezonesets/Africa.txt
+%{_datadir}/postgresql/timezonesets/America.txt
+%{_datadir}/postgresql/timezonesets/Antarctica.txt
+%{_datadir}/postgresql/timezonesets/Asia.txt
+%{_datadir}/postgresql/timezonesets/Atlantic.txt
+%{_datadir}/postgresql/timezonesets/Australia
+%{_datadir}/postgresql/timezonesets/Australia.txt
+%{_datadir}/postgresql/timezonesets/Default
+%{_datadir}/postgresql/timezonesets/Etc.txt
+%{_datadir}/postgresql/timezonesets/Europe.txt
+%{_datadir}/postgresql/timezonesets/India
+%{_datadir}/postgresql/timezonesets/Indian.txt
+%{_datadir}/postgresql/timezonesets/Pacific.txt
+%{_datadir}/postgresql/tsearch_data
 
 %attr(700,postgres,postgres) %dir /var/log/postgres
 %logrotatedir/%{bname}
@@ -737,7 +708,7 @@ EOF
 %{_bindir}/ecpg
 %{_libdir}/lib*.a
 %{_libdir}/lib*.so
-%{_libdir}/pgsql/pgxs/
+%{_libdir}/postgresql/pgxs/
 %{_mandir}/man1/ecpg.1*
 %{_bindir}/pg_config
 %{_mandir}/man1/pg_config.1*
@@ -755,25 +726,21 @@ EOF
 
 %files plpython
 %defattr(-,root,root) 
-%{_libdir}/pgsql/plpython.so 
+%{_libdir}/postgresql/plpython.so 
 
 %files plperl
 %defattr(-,root,root) 
-%{_libdir}/pgsql/plperl.so 
+%{_libdir}/postgresql/plperl.so 
 
 %files pltcl
 %defattr(-,root,root) 
-%{_libdir}/pgsql/pltcl.so 
+%{_libdir}/postgresql/pltcl.so 
 %{_bindir}/pltcl_delmod 
 %{_bindir}/pltcl_listmod 
 %{_bindir}/pltcl_loadmod 
-%{_datadir}/pgsql/unknown.pltcl 
+%{_datadir}/postgresql/unknown.pltcl 
 
 %files plpgsql
 %defattr(-,root,root) 
-%{_libdir}/pgsql/plpgsql.so
+%{_libdir}/postgresql/plpgsql.so
 
-%files test
-%defattr(-,postgres,postgres)
-%attr(-,postgres,postgres) %{_libdir}/pgsql/test/*
-%attr(-,postgres,postgres) %dir %{_libdir}/pgsql/test
