@@ -21,7 +21,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 2
+%define rel 3
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -162,7 +162,7 @@ Provides: %{bname}-server-virtual = %{current_major_version}
 Conflicts: %{bname}-server-virtual < %{current_major_version}
 Conflicts: %{bname}-server-virtual > %{current_major_version}
 Provides: %{bname}-server = %{version}-%{release}
-Obsoletes: %{bname}8.3
+Obsoletes: %{bname}8.3-test
 
 %description	server
 The postgresql-server package includes the programs needed to create
