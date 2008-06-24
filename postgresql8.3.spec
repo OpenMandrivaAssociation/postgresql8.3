@@ -21,7 +21,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 3
+%define rel 4
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -117,9 +117,9 @@ Group:		System/Libraries
 Obsoletes:	postgresql-libs
 Provides:	postgresql-libs = %{version}-%{release}
 Provides:   libpq = %{version}-%{release}
-Provides:   %{_lib}pq%{major} = %{current_major_version}
-Conflicts:  %{_lib}pq%{major} < %{current_major_version}
-Conflicts:  %{_lib}pq%{major} > %{current_major_version}
+Provides:   %{libname}-virtual = %{current_major_version}
+Conflicts:  %{libname}-virtual > %{current_major_version}
+Conflicts:  %{libname}-virtual < %{current_major_version}
 # Avoid conflicts with lib having bad major
 Conflicts:  libpq3 = 8.0.2
 
@@ -134,9 +134,9 @@ Summary:	Shared library libecpg for PostgreSQL
 Group:		System/Libraries
 Requires:	postgresql%{current_major_version} = %{version}-%{release}
 Provides:	libecpg = %{version}-%{release}
-Provides:   %{_lib}ecpg%{major_ecpg} = %{current_major_version}
-Conflicts:  %{_lib}ecpg%{major_ecpg} < %{current_major_version}
-Conflicts:  %{_lib}ecpg%{major_ecpg} > %{current_major_version}
+Provides:   %{libecpg}-virtual = %{current_major_version}
+Conflicts:  %{libecpg}-virtual < %{current_major_version}
+Conflicts:  %{libecpg}-virtual > %{current_major_version}
 
 %description -n	%{libecpg}
 Libecpg is used by programs built with ecpg (Embedded PostgreSQL for C)
