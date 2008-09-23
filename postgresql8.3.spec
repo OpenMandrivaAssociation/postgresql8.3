@@ -264,6 +264,7 @@ Requires:	%{name}-plpgsql = %{version}-%{release}
 Provides: %{bname}-pl-virtual = %{current_major_version}
 Conflicts: %{bname}-pl-virtual < %{current_major_version}
 Conflicts: %{bname}-pl-virtual > %{current_major_version}
+Conflicts: %{bname}-pl < %{version}-%{release}
 Provides:  %{bname}-pl = %{version}-%{release}
 
 %description	pl
@@ -281,6 +282,7 @@ Requires: %{?arch_tagged:%arch_tagged %{bname}-server-ABI}%{?!arch_tagged:%{bnam
 Provides: %{bname}-plpython-virtual = %{current_major_version}
 Conflicts: %{bname}-plpython-virtual < %{current_major_version}
 Conflicts: %{bname}-plpython-virtual > %{current_major_version}
+Conflicts: %{bname}-plpython < %{version}-%{release}
 Provides:  %{bname}-plpython = %{version}-%{release}
 
 %description	plpython
@@ -300,6 +302,7 @@ Requires: %{?arch_tagged:%arch_tagged %{bname}-server-ABI}%{?!arch_tagged:%{bnam
 Provides: %{bname}-plperl-virtual = %{current_major_version}
 Conflicts: %{bname}-plperl-virtual < %{current_major_version}
 Conflicts: %{bname}-plperl-virtual > %{current_major_version}
+Conflicts: %{bname}-plperl < %{version}-%{release}
 Provides:  %{bname}-plperl = %{version}-%{release}
 
 %description	plperl
@@ -317,6 +320,7 @@ Requires: %{?arch_tagged:%arch_tagged %{bname}-server-ABI}%{?!arch_tagged:%{bnam
 Provides: %{bname}-pltcl-virtual = %{current_major_version}
 Conflicts: %{bname}-pltcl-virtual < %{current_major_version}
 Conflicts: %{bname}-pltcl-virtual > %{current_major_version}
+Conflicts: %{bname}-pltcl < %{version}-%{release}
 Provides:  %{bname}-pltcl = %{version}-%{release}
 
 %description	pltcl
@@ -335,6 +339,7 @@ Requires: %{?arch_tagged:%arch_tagged %{bname}-server-ABI}%{?!arch_tagged:%{bnam
 Provides: %{bname}-plpgsql-virtual = %{current_major_version}
 Conflicts: %{bname}-plpgsql-virtual < %{current_major_version}
 Conflicts: %{bname}-plpgsql-virtual > %{current_major_version}
+Conflicts: %{bname}-plpgsql < %{version}-%{release}
 Provides:  %{bname}-plpgsql = %{version}-%{release}
 
 %description	plpgsql
