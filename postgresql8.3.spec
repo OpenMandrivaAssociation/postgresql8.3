@@ -21,7 +21,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 3
+%define rel 4
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -53,8 +53,8 @@ Source5:	ftp://ftp.postgresql.orga/pub/source/v%{version}/postgresql-%{version}%
 Source11:	postgresql.init
 Source13:	postgresql.mdv.releasenote
 Requires:	perl
-Provides:	postgresql-clients
-Obsoletes:	postgresql-clients
+Provides:	postgresql-clients = %{version}-%{release}
+Conflicts:	postgresql-clients < %{version}-%{release}
 BuildRequires:	X11-devel bison flex gettext termcap-devel ncurses-devel openssl-devel
 BuildRequires:	pam-devel perl-devel python-devel readline-devel >= 4.3 tk zlib-devel tcl
 BuildRequires:	tcl tcl-devel
@@ -113,7 +113,7 @@ if you're installing the postgresql-server package.
 %package -n	%{libname}
 Summary:	The shared libraries required for any PostgreSQL clients
 Group:		System/Libraries
-Obsoletes:	postgresql-libs
+Conflicts:	postgresql-libs < %{version}-%{release}
 Provides:	postgresql-libs = %{version}-%{release}
 Provides:   libpq = %{version}-%{release}
 Provides:   %{libname}-virtual = %{current_major_version}
@@ -161,7 +161,7 @@ Provides: %{bname}-server-virtual = %{current_major_version}
 Conflicts: %{bname}-server-virtual < %{current_major_version}
 Conflicts: %{bname}-server-virtual > %{current_major_version}
 Provides: %{bname}-server = %{version}-%{release}
-Obsoletes: %{bname}8.3-test
+Conflicts: %{bname}8.3-test < %{version}-%{release}
 
 %description	server
 The postgresql-server package includes the programs needed to create
@@ -222,10 +222,10 @@ Provides:	libecpg-devel = %{version}-%{release}
 Provides:   %{_lib}ecpg-devel = %{version}-%{release}
 Conflicts:  %{_lib}ecpg-devel < %{version}-%{release}
 Conflicts:  %{_lib}ecpg-devel > %{version}-%{release}
-Obsoletes:  %mklibname -d ecpg 5
-Obsoletes:  %mklibname -d pq 5
-Obsoletes:  %mklibname -d pq8.3
-Obsoletes:  %mklibname -d ecpg8.3
+Conflicts:  %mklibname -d ecpg 5
+Conflicts:  %mklibname -d pq 5
+Conflicts:  %mklibname -d pq8.3
+Conflicts:  %mklibname -d ecpg8.3
 
 %description	devel
 The postgresql-devel package contains the header files and libraries
@@ -256,7 +256,7 @@ package.
 %package	pl
 Summary:	Procedurals languages for PostgreSQL
 Group:		Databases
-Obsoletes:	libpgsql2
+Conflicts:	libpgsql2
 Requires:	%{name}-plpython = %{version}-%{release} 
 Requires:	%{name}-plperl = %{version}-%{release} 
 Requires:	%{name}-pltcl = %{version}-%{release} 
