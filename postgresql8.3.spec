@@ -21,7 +21,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 5
+%define rel 6
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -53,8 +53,8 @@ Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Provides: %{bname}-virtual = %{current_major_version}
 Conflicts: %{bname}-virtual < %{current_major_version}
 Conflicts: %{bname}-virtual > %{current_major_version}
-Provides: %{bname} = %{name}-%{version}
-Conflicts: %{bname} < %{name}-%{version}
+Provides: %{bname} = %{version}-%{release}
+Conflicts: %{bname} < %{version}-%{release}
 
 %description
 PostgreSQL is an advanced Object-Relational database management system
