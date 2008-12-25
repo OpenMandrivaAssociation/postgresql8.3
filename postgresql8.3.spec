@@ -21,7 +21,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 2
+%define rel 3
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -39,6 +39,7 @@ Source0:	ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}%{
 Source5:	ftp://ftp.postgresql.orga/pub/source/v%{version}/postgresql-%{version}%{?beta}.tar.bz2.md5
 Source11:	postgresql.init
 Source13:	postgresql.mdv.releasenote
+Patch0:     postgresql-fmtchk.patch
 Requires:	perl
 Provides:	postgresql-clients = %{version}-%{release}
 Conflicts:	postgresql-clients < %{version}-%{release}
@@ -300,6 +301,8 @@ server package.
 %prep
 
 %setup -q -n %{bname}-%{version}%{?beta}
+
+%patch0 -p0 -b .fmtchk
 
 %build
 
