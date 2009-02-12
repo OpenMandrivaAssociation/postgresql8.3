@@ -15,13 +15,13 @@
 
 %define bname postgresql
 %define current_major_version 8.3
-%define current_minor_version 5
+%define current_minor_version 6
 
 # Define if it's a beta
 # %%define beta RC2
 
 # define the mdv release
-%define rel 3
+%define rel 1
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -48,8 +48,7 @@ BuildRequires:	pam-devel perl-devel python-devel readline-devel >= 4.3 tk zlib-d
 BuildRequires:	tcl tcl-devel
 BuildRequires:  libxml2-devel
 BuildRequires:  libxslt-devel
-# should libedit0 be moved to main?
-BuildConflicts:	edit-devel
+BuildRequires:	edit-devel
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Provides: %{bname}-virtual = %{current_major_version}
 Conflicts: %{bname}-virtual < %{current_major_version}
@@ -306,17 +305,7 @@ server package.
 
 %build
 
-pushd src
-#(deush) if libtool exist, copy some files 
-if [ -d %{_datadir}/libtool ]
-then
-   cp %{_datadir}/libtool/config.* .
-fi
-
 %serverbuild
-CFLAGS=`echo $RPM_OPT_FLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
-
-popd
 
 %configure \
         --disable-rpath \
