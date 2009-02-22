@@ -21,7 +21,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 1
+%define rel 1.1
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -37,6 +37,7 @@ Group:		Databases
 URL:		http://www.postgresql.org/ 
 Source0:	ftp://ftp.postgresql.org/pub/source/v%{version}/postgresql-%{version}%{?beta}.tar.bz2
 Source5:	ftp://ftp.postgresql.orga/pub/source/v%{version}/postgresql-%{version}%{?beta}.tar.bz2.md5
+Source10:   postgres.profile
 Source11:	postgresql.init
 Source13:	postgresql.mdv.releasenote
 Patch0:     postgresql-fmtchk.patch
@@ -436,19 +437,26 @@ management in:
 Please, read it.
 EOF
 
-# postgres' .bash_profile
-cat > $RPM_BUILD_ROOT/var/lib/pgsql/.bashrc <<EOF
-# Default database location
+# postgres' .profile and .bashrc
+install -D -m 700 %SOURCE10 $RPM_BUILD_ROOT/var/lib/pgsql/.profile
+(
+cd $RPM_BUILD_ROOT/var/lib/pgsql/
+ln -s .profile .bashrc
+)
+
+cat > %buildroot%_sysconfdir/sysconfig/postgresql <<EOF
 # Olivier Thauvin <nanardon@mandriva.org>
-PGDATA=%pgdata
 
-# Setting up minimal envirronement
-[ -f /etc/sysconfig/i18n ] && . /etc/sysconfig/i18n
-[ -f /etc/sysconfig/postgresql ] && . /etc/sysconfig/postgresql
+# The database location:
+# You probably won't change this
+# PGDATA=/var/lib/pgsql/data
 
-export LANG LC_ALL LC_CTYPE LC_COLLATE LC_NUMERIC LC_CTYPE LC_TIME
-export PGDATA
-PS1="[\u@\h \W]\\$ "
+# What is the based locales for postgresql
+# Setting locales to C allow to use any encoding
+# ISO or UTF, any other choice will restrict you
+# either ISO or UTF.
+LC_ALL=C
+
 EOF
 
 %pre server
@@ -578,6 +586,7 @@ EOF
 %files server -f server.lst
 %defattr(-,root,root)
 %config(noreplace) %{_initrddir}/postgresql
+%config(noreplace) %{_sysconfdir}/sysconfig/postgresql
 %doc README.urpmi postgresql.mdv.releasenote
 %{_bindir}/initdb
 %{_bindir}/ipcclean
@@ -597,6 +606,7 @@ EOF
 %dir %{_libdir}/postgresql
 %dir %{_datadir}/postgresql
 %attr(644,postgres,postgres) %config(noreplace) /var/lib/pgsql/.bashrc
+%attr(-,postgres,postgres) /var/lib/pgsql/.profile
 %attr(700,postgres,postgres) %dir %{pgdata}
 %attr(-,postgres,postgres) %{pgdata}/data
 %attr(700,postgres,postgres) %dir %{pgdata}/backups
