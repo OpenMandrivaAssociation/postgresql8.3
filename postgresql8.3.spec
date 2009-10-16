@@ -413,11 +413,6 @@ cat libpq.lang libecpg.lang >> main.lst
 # taken directly in build dir.
 rm -fr $RPM_BUILD_ROOT%{_datadir}/doc/postgresql/contrib/
 
-(
-cd postgresql-mdk
-make install DESTDIR=%buildroot
-)
-
 mkdir -p %buildroot/%_sys_macros_dir
 cat > %buildroot/%_sys_macros_dir/%{name}.macros <<EOF
 %%postgresql_version %{version}
