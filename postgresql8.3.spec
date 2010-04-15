@@ -4,6 +4,8 @@
 %define _requires_exceptions devel(libtcl8.4)
 %endif
 
+%define Werror_cflags %nil
+
 %define perl_version %(rpm -q --qf "%{VERSION}" perl)
 %define perl_epoch %(rpm -q --qf "%{EPOCH}" perl)
 
@@ -15,13 +17,13 @@
 
 %define bname postgresql
 %define current_major_version 8.3
-%define current_minor_version 9
+%define current_minor_version 10
 
 # Define if it's a beta
 # %%define beta RC2
 
 # define the mdv release
-%define rel 2
+%define rel 1
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -40,7 +42,6 @@ Source5:	ftp://ftp.postgresql.orga/pub/source/v%{version}/postgresql-%{version}%
 Source10:   postgres.profile
 Source11:	postgresql.init
 Source13:	postgresql.mdv.releasenote
-Patch0:     postgresql-fmtchk.patch
 Requires:	perl
 Provides:	postgresql-clients = %{version}-%{release}
 Conflicts:	postgresql-clients < %{version}-%{release}
@@ -299,16 +300,11 @@ procedural languages for the backend. PL/PgSQL is part of the core
 server package.
 
 %prep
-
 %setup -q -n %{bname}-%{version}%{?beta}
 
-%patch0 -p0 -b .fmtchk
-
 %build
-
 %serverbuild
-
-%configure \
+%configure2_5x \
         --disable-rpath \
         --enable-hba \
 	    --enable-locale \
