@@ -23,7 +23,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 1
+%define rel 3
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -51,6 +51,7 @@ BuildRequires:	tcl tcl-devel
 BuildRequires:  libxml2-devel
 BuildRequires:  libxslt-devel
 BuildRequires:	edit-devel
+BuildRequires:  ossp_uuid-devel
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Provides: %{bname}-virtual = %{current_major_version}
 Conflicts: %{bname}-virtual < %{current_major_version}
@@ -325,7 +326,8 @@ server package.
         --mandir=%{_mandir} \
         --prefix=%_prefix \
         --sysconfdir=%{_sysconfdir}/pgsql \
-        --enable-nls
+        --enable-nls \
+        --with-ossp-uuid
 
 # $(rpathdir) come from Makefile
 perl -pi -e 's|^all:|LINK.shared=\$(COMPILER) -shared -Wl,-rpath,\$(rpathdir),-soname,\$(soname)\nall:|' src/pl/plperl/GNUmakefile
@@ -608,6 +610,7 @@ EOF
 %{_libdir}/postgresql/test_parser.so
 %{_libdir}/postgresql/tsearch2.so
 %{_libdir}/postgresql/dict_snowball.so
+%{_libdir}/postgresql/uuid-ossp.so
 %{_datadir}/postgresql/postgres.bki
 %{_datadir}/postgresql/postgres.description
 %{_datadir}/postgresql/*.sample
