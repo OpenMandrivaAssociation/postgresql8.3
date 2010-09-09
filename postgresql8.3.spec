@@ -23,7 +23,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 5
+%define rel 6
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
