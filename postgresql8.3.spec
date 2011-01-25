@@ -23,7 +23,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 3
+%define rel 4
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -44,7 +44,6 @@ Source11:	postgresql.init
 Source13:	postgresql.mdv.releasenote
 Requires:	perl
 Provides:	postgresql-clients = %{version}-%{release}
-Conflicts:	postgresql-clients < %{version}-%{release}
 BuildRequires:	X11-devel bison flex gettext termcap-devel ncurses-devel openssl-devel
 BuildRequires:	pam-devel perl-devel python-devel readline-devel >= 4.3 tk zlib-devel tcl
 BuildRequires:	tcl tcl-devel
@@ -53,10 +52,10 @@ BuildRequires:  libxslt-devel
 BuildRequires:	edit-devel
 BuildRequires:  ossp_uuid-devel
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
-Provides: %{bname}-virtual = %{current_major_version}
-Conflicts: %{bname}-virtual < %{current_major_version}
-Provides: %{bname} = %{version}-%{release}
-Conflicts: %{bname} < %{version}-%{release}
+Provides:	%{bname}-virtual = %{current_major_version}
+Conflicts:	%{bname}-virtual < %{current_major_version}
+Requires:	%{libname} = %{version}
+Provides:	%{bname} = %{version}-%{release}
 
 %description
 PostgreSQL is an advanced Object-Relational database management system
@@ -80,9 +79,9 @@ if you're installing the postgresql-server package.
 Summary:	The shared libraries required for any PostgreSQL clients
 Group:		System/Libraries
 Provides:	postgresql-libs = %{version}-%{release}
-Provides:   libpq = %{version}-%{release}
-Provides:   %{libname}-virtual = %{current_major_version}
-Conflicts:  %{libname}-virtual < %{current_major_version}
+Provides:	libpq = %{version}-%{release}
+Provides:	%{mklibname pq}-virtual = %{current_major_version}
+Conflicts:	libpq < %{current_major_version}
 # Avoid conflicts with lib having bad major
 Conflicts:  libpq3 = 8.0.2
 
@@ -97,8 +96,8 @@ Summary:	Shared library libecpg for PostgreSQL
 Group:		System/Libraries
 Requires:	postgresql%{current_major_version} = %{version}-%{release}
 Provides:	libecpg = %{version}-%{release}
-Provides:   %{libecpg}-virtual = %{current_major_version}
-Conflicts:  %{libecpg}-virtual < %{current_major_version}
+Provides:	%{mklibname ecpg}-virtual = %{current_major_version}
+Conflicts:	libecpg < %{current_major_version}
 
 %description -n	%{libecpg}
 Libecpg is used by programs built with ecpg (Embedded PostgreSQL for C)
