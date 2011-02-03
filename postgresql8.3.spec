@@ -17,13 +17,13 @@
 
 %define bname postgresql
 %define current_major_version 8.3
-%define current_minor_version 12
+%define current_minor_version 14
 
 # Define if it's a beta
 # %%define beta RC2
 
 # define the mdv release
-%define rel 5
+%define rel 1
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
