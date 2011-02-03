@@ -23,7 +23,7 @@
 # %%define beta RC2
 
 # define the mdv release
-%define rel 4
+%define rel 5
 
 %define release %mkrel %{?beta:0.rc.%{beta}.}%{rel}
 
@@ -44,12 +44,16 @@ Source11:	postgresql.init
 Source13:	postgresql.mdv.releasenote
 Requires:	perl
 Provides:	postgresql-clients = %{version}-%{release}
-BuildRequires:	X11-devel bison flex gettext termcap-devel ncurses-devel openssl-devel
-BuildRequires:	pam-devel perl-devel python-devel readline-devel >= 4.3 tk zlib-devel tcl
-BuildRequires:	tcl tcl-devel
-BuildRequires:  libxml2-devel
-BuildRequires:  libxslt-devel
-BuildRequires:	edit-devel
+BuildRequires:	bison flex
+BuildRequires:	openssl-devel
+BuildRequires:	pam-devel
+BuildRequires:	perl-devel
+BuildRequires:	python-devel
+BuildRequires:	readline-devel
+BuildRequires:	tcl-devel
+BuildRequires:	libxml2-devel
+BuildRequires:	libxslt-devel
+BuildRequires:	zlib-devel
 BuildRequires:  ossp_uuid-devel
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Provides:	%{bname}-virtual = %{current_major_version}
