@@ -1,0 +1,6 @@
+sources:
+  "postgres.profile:"	5ce9c6fe5586a6b453f96e8eb61c48f51e579965
+  "postgresql-8.3.15.tar.bz2:"	b20895aa66c15d5f394579aed50ce88c4018ecc0
+  "postgresql-8.3.15.tar.bz2.md5:"	64105ce39d69e6d378b625037164292de8fa6151
+  "postgresql.init:"	142e2023748491bcda75c4d38c8c8fc9479512fd
+  "postgresql.mdv.releasenote:"	fb611597a84dd1152c8e13d8be7d6ea47ee1cb23
